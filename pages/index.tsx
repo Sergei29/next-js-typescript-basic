@@ -1,7 +1,8 @@
 import type { NextPage } from 'next'
 import { useEffect, useState } from "react";
-import Head from 'next/head'
-import Image from 'next/image'
+import Head from 'next/head';
+import Image from 'next/image';
+import { API_INDEX_URL } from "../constants";
 
 import styles from '../styles/Home.module.css'
 
@@ -9,8 +10,7 @@ const Home: NextPage = () => {
 const [strMessage, setStrMessage] = useState<string>('');
 
 useEffect(() => {
-  const API_URL = process.env.NODE_ENV === 'development'? 'http://localhost:3000/api/hello': '/api/hello';
-  fetch(API_URL).then(res=>res.json()).then(({name}) => {
+  fetch(`${API_INDEX_URL}/hello`).then(res=>res.json()).then(({name}) => {
     setStrMessage(name);
   }).catch(e=>{console.log(`error: `, e); setStrMessage('fetch error occured')});
 }, []);
