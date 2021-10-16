@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "easy-json-database": "^1.5.0",
     "next": "11.1.2",
     "next-connect": "^0.10.2",
     "react": "17.0.2",
