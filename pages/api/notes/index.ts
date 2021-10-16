@@ -4,11 +4,16 @@ import nc from "next-connect";
 import db, {mockData} from '../../../db';
 
 type Data = {
-  data: string[]
+  data: Record<string, any>[]
 }
 
 export default nc<NextApiRequest, NextApiResponse<Data>>()
 .get((req, res) => {
   // const notes = db.get('notes');
-  res.status(200).json({ data: ['hello from index notes'] });
+  res.status(200).json({ 
+    data: [{
+    "id": 1634233912404,
+    "title": "Note 0"
+    }] 
+  });
 });
