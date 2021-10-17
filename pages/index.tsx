@@ -1,6 +1,15 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from "theme-ui";
+import dynamic from "next/dynamic";
+
+/**
+ * @description Sometimes you just need to skip rendering some component on the server because: it depends on the DOM API, it depends on client-side data, something else
+ * Next.js supports dynamic imports that, when used with components, will opt out of SSR.
+ */
+const SponsoredAd = dynamic(() => import("../components/SponsoredAd"), {
+  ssr: false,
+});
 
 type Props = {
   content: Record<string, any>;
@@ -24,6 +33,8 @@ const IndexPage = ({
           <small sx={{ fontSize: 2, ml: 2 }}>SSR pre-rendered</small>
         </h1>
       </div>
+      {/* But this is not server pre-rendered */}
+      <SponsoredAd />
     </div>
   );
 };
