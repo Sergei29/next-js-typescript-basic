@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from "theme-ui";
+import { GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 
 /**
@@ -15,9 +16,7 @@ type Props = {
   content: Record<string, any>;
 };
 
-const IndexPage = ({
-  content = { title: "This is my app" },
-}: Props): JSX.Element => {
+const IndexPage = ({ content }: Props): JSX.Element => {
   return (
     <div sx={{ height: `calc(100vh - 60px)` }}>
       <div
@@ -40,3 +39,15 @@ const IndexPage = ({
 };
 
 export default IndexPage;
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  // For example: get data from cms...
+
+  return {
+    props: {
+      content: {
+        title: "This is my really nice app!",
+      },
+    },
+  };
+};

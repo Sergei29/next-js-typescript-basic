@@ -11,9 +11,7 @@ type Props = {
   note: NoteType;
 };
 
-const Note = ({
-  note = { title: "mock title", _id: "mock ID" },
-}: Props): JSX.Element => {
+const Note = ({ note }: Props): JSX.Element => {
   return (
     <div sx={{ variant: "containers.page" }}>
       <h1>{note.title} </h1>
@@ -23,3 +21,26 @@ const Note = ({
 };
 
 export default Note;
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  params,
+}) => {
+  const response = await fetch(`${API_INDEX_URL}/notes/${params!.id}`);
+
+  // if no response - redirect to /notes page
+  if (!response.ok) {
+    res.writeHead(302, { Location: "/notes" });
+    res.end();
+    return { props: {} };
+  }
+
+  const { data } = await response.json();
+
+  return {
+    props: {
+      note: data,
+    },
+  };
+};
