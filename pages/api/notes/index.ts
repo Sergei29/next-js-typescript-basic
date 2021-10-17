@@ -9,6 +9,9 @@ type Data = {
 
 export default nc<NextApiRequest, NextApiResponse<Data>>()
 .get((req, res) => {
+  /**
+   * @description the json db doesn't work in production - it requires a real live db to be used instead
+   */
   // const notes = db.get('notes');
   res.status(200).json({ 
     data: [{
