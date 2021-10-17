@@ -27,7 +27,7 @@ const Home: NextPage = () => {
       })
       .catch((e) => {
         console.log(`error: `, e);
-        setStrMessage("fetch error occured");
+        setArrNotes([{ title: "fetch error occured" }]);
       });
   }, []);
 
