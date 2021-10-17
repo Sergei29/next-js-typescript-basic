@@ -1,73 +1,107 @@
-import Database from "easy-json-database";
+import { connectToMongoDB } from "./connectToMongoDB";
+import { ObjectId } from "mongodb";
+import type { NextApiRequest, NextApiResponse } from "next";
 
-const db = new Database("./db/db.json", {
-  snapshots: {
-    enabled: true,
-    interval: 24 * 60 * 60 * 1000,
-  },
-});
+export const getNotes = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const { db } = await connectToMongoDB();
+    const notes = await db
+      .collection("notes")
+      .find({})
+      .sort({ published: -1 })
+      .toArray();
 
-export default db;
-
-export const mockData = [
-  {
-      "id": 1634233912404,
-      "title": "Note 0"
-  },
-  {
-      "id": 1634233912405,
-      "title": "Note 1"
-  },
-  {
-      "id": 1634233912406,
-      "title": "Note 2"
-  },
-  {
-      "id": 1634233912407,
-      "title": "Note 3"
-  },
-  {
-      "id": 1634233912408,
-      "title": "Note 4"
-  },
-  {
-      "id": 1634233912409,
-      "title": "Note 5"
-  },
-  {
-      "id": 1634233912410,
-      "title": "Note 6"
-  },
-  {
-      "id": 1634233912411,
-      "title": "Note 7"
-  },
-  {
-      "id": 1634233912412,
-      "title": "Note 8"
-  },
-  {
-      "id": 1634233912413,
-      "title": "Note 9"
-  },
-  {
-      "id": 1634233912414,
-      "title": "Note 10"
-  },
-  {
-      "id": 1634233912415,
-      "title": "Note 11"
-  },
-  {
-      "id": 1634233912416,
-      "title": "Note 12"
-  },
-  {
-      "id": 1634233912418,
-      "title": "New Title Note 14"
-  },
-  {
-      "title": "New Title Note 15",
-      "id": 1634234421799
+    return res.status(200).json({
+      data: JSON.parse(JSON.stringify(notes)),
+    });
+  } catch (error) {
+    // return the error
+    return res.status(500).json({
+      data: (error as Error).message,
+    });
   }
-]
+};
+
+export const addNote = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    // connect to the database
+    let { db } = await connectToMongoDB();
+    // add the note
+    const newNote = await db.collection("notes").insertOne(req.body);
+    // return a message
+    return res.status(200).json({
+      data: newNote,
+    });
+  } catch (error) {
+    // return the error
+    return res.status(500).json({
+      data: (error as Error).message,
+    });
+  }
+};
+
+export const updateNote = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    // connect to the database
+    let { db } = await connectToMongoDB();
+    // update the published status of the note
+    const updatedNote = await db.collection("notes").updateOne(
+      {
+        _id: new ObjectId(`${req.query.id}`),
+      },
+      { $set: { ...req.body, published: true } }
+    );
+
+    // return a message
+    return res.status(200).json({
+      data: updatedNote,
+    });
+  } catch (error) {
+    // return the error
+    return res.status(500).json({
+      data: (error as Error).message,
+    });
+  }
+};
+
+export const getOneNote = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    // connect to the database
+    let { db } = await connectToMongoDB();
+    // Findinging the note
+    const foundResult = await db.collection("notes").findOne({
+      _id: new ObjectId(`${req.query.id}`),
+    });
+
+    // return a message
+    return res.status(200).json({
+      data: foundResult,
+    });
+  } catch (error) {
+    // return the error
+    return res.status(500).json({
+      data: (error as Error).message,
+    });
+  }
+};
+
+export const deleteNote = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    // connect to the database
+    let { db } = await connectToMongoDB();
+    // Deleting the note
+    const deleteResult = await db.collection("notes").deleteOne({
+      _id: new ObjectId(`${req.query.id}`),
+    });
+
+    // return a message
+    return res.status(200).json({
+      data: deleteResult,
+    });
+  } catch (error) {
+    // return the error
+    return res.status(500).json({
+      data: (error as Error).message,
+    });
+  }
+};
