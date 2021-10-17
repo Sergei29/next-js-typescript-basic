@@ -10,4 +10,4 @@ const config = {
   reactStrictMode: true,
 };
 
-module.exports = withNextEnv(config)
+module.exports = withNextEnv(config);

@@ -1,49 +1,31 @@
-import type { NextPage } from "next";
-import { useEffect, useState } from "react";
-import Head from "next/head";
-import Image from "next/image";
-import { API_INDEX_URL } from "../constants";
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import { jsx } from "theme-ui";
 
-import styles from "../styles/Home.module.css";
+type Props = {
+  content: Record<string, any>;
+};
 
-const Home: NextPage = () => {
-  const [strMessage, setStrMessage] = useState<string>("");
-  const [arrNotes, setArrNotes] = useState<Record<string, any>[]>([]);
-
-  useEffect(() => {
-    fetch(`${API_INDEX_URL}/hello`)
-      .then((res) => res.json())
-      .then(({ name }) => {
-        setStrMessage(name);
-      })
-      .catch((e) => {
-        console.log(`error: `, e);
-        setStrMessage("fetch error occured");
-      });
-    fetch(`${API_INDEX_URL}/notes`)
-      .then((res) => res.json())
-      .then(({ data }) => {
-        setArrNotes(data);
-      })
-      .catch((e) => {
-        console.log(`error: `, e);
-        setArrNotes([{ title: "fetch error occured" }]);
-      });
-  }, []);
-
+const IndexPage = ({
+  content = { title: "This is my app" },
+}: Props): JSX.Element => {
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>My App</title>
-      </Head>
-
-      <main className={styles.main}>
-        <h4>Message: {strMessage}</h4>
-      </main>
-
-      <footer className={styles.footer}></footer>
+    <div sx={{ height: `calc(100vh - 60px)` }}>
+      <div
+        sx={{
+          variant: "containers.page",
+          display: "flex",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <h1 sx={{ fontSize: 8, my: 0 }}>
+          {content.title || "This is a really dope note taking app."}
+          <small sx={{ fontSize: 2, ml: 2 }}>SSR pre-rendered</small>
+        </h1>
+      </div>
     </div>
   );
 };
 
-export default Home;
+export default IndexPage;
